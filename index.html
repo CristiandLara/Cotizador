@@ -6,6 +6,45 @@
     <title>quoter</title>
 </head>
 <body>
-    
-</body>
+<h1>Cotizador de Criptomonedas</h1> 
+<div id = "container">
+    <img src="crypto-icon.png" alt="Icono de Criptomoneda">
+    <div id="coin-container">
+        
+        <form id="coin-form">
+             <div class="coin-input">
+                <label for="coin">Selecciona una criptomoneda:</label>
+                <select id="coin" class="coin-input">
+                    <option selected disabled>-- Elige tu moneda --</option>
+                    <option value="USD">Dolares </option>
+                    <option value="EU">Euros</option>
+                    <option value="ARS">Pesos Argentinos</option>
+                    <option value="VES">Bolivares </option>
+                </select>
+            </div>
+            <div class="coin-input-container">
+                <label for="crypto">Selecciona una criptomoneda:</label>
+                <select id="crypto" class="coin-input">
+                    <option selected disabled>-- Selecciona una opción --</option>
+                    <option value="BCH">Bitcoin Cash (BCH)</option>
+                    <option value="BTC">Bitcoin (BTC)</option>
+                    <option value="ETH">Ethereum (ETH)</option>
+                    <option value="LTC">Litecoin (LTC)</option>
+                </select>
+            </div>
+            <div class="coin-input-container">
+            <input type="text" id="amount" class="coin-input" placeholder="Monto">
+            </div>
+            <button  type="submit" id="form-button">Cotizar</button>
+        </form>
+        <div id="coin-info">
+            <p id="info">El precio es  <span class="price">1480$</span></p>
+            <p id="info">El precio mas alto es  <span class="price">1480$</span></p>
+            <p id="info">El precio  mas bajo es  <span class="price">1480$</span></p>
+            <p id="info">Variacion 24H<span class="price">4.5%</span></p>
+            <p id="info">Puedes comprar <span class="price">1.5481 ETH </span></p>
+        </div>
+    </div>
+    </body>
+<script src="script.js"></script>
 </html>
