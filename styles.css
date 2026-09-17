@@ -6,110 +6,14 @@
 
 body {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #0b0b2b, #1b2735 70%, #090a0f);
+  background: url("imgbackground.jpg") center center / cover no-repeat fixed;
   overflow: hidden;
+  color: #ffffff;
 }
 
 h1 {
   text-align: center;
-}
-
-.stars {
-  width: 1px;
-  height: 1px;
-  position: absolute;
-  background: white;
-  box-shadow: 2vw 5vh 2px white, 10vw 8vh 2px white, 15vw 15vh 1px white,
-    22vw 22vh 1px white, 28vw 12vh 2px white, 32vw 32vh 1px white,
-    38vw 18vh 2px white, 42vw 35vh 1px white, 48vw 25vh 2px white,
-    53vw 42vh 1px white, 58vw 15vh 2px white, 63vw 38vh 1px white,
-    68vw 28vh 2px white, 73vw 45vh 1px white, 78vw 32vh 2px white,
-    83vw 48vh 1px white, 88vw 20vh 2px white, 93vw 52vh 1px white,
-    98vw 35vh 2px white, 5vw 60vh 1px white, 12vw 65vh 2px white,
-    18vw 72vh 1px white, 25vw 78vh 2px white, 30vw 85vh 1px white,
-    35vw 68vh 2px white, 40vw 82vh 1px white, 45vw 92vh 2px white,
-    50vw 75vh 1px white, 55vw 88vh 2px white, 60vw 95vh 1px white,
-    65vw 72vh 2px white, 70vw 85vh 1px white, 75vw 78vh 2px white,
-    80vw 92vh 1px white, 85vw 82vh 2px white, 90vw 88vh 1px white,
-    95vw 75vh 2px white;
-  animation: twinkle 8s infinite linear;
-}
-
-.shooting-star {
-  position: absolute;
-  width: 100px;
-  height: 2px;
-  background: linear-gradient(90deg, white, transparent);
-  animation: shoot 3s infinite ease-in;
-  pointer-events: none;
-}
-
-.shooting-star:nth-of-type(4) {
-  top: 20%;
-  left: -100px;
-  animation-delay: 0s;
-}
-
-.shooting-star:nth-of-type(5) {
-  top: 35%;
-  left: -100px;
-  animation-delay: 1s;
-}
-
-.shooting-star:nth-of-type(6) {
-  top: 50%;
-  left: -100px;
-  animation-delay: 2s;
-}
-
-.shooting-star:nth-of-type(7) {
-  top: 65%;
-  left: -100px;
-  animation-delay: 1.5s;
-}
-
-.shooting-star:nth-of-type(8) {
-  top: 80%;
-  left: -100px;
-  animation-delay: 2.5s;
-}
-
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.8;
-  }
-  50% {
-    opacity: 0.4;
-  }
-}
-
-@keyframes shoot {
-  0% {
-    transform: translateX(0) translateY(0) rotate(25deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(120vw) translateY(50vh) rotate(25deg);
-    opacity: 0;
-  }
-}
-
-/* Additional twinkling stars with different animation timing */
-.stars::after {
-  content: "";
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  background: white;
-  box-shadow: 8vw 12vh 2px white, 16vw 18vh 1px white, 24vw 25vh 2px white,
-    33vw 15vh 1px white, 41vw 28vh 2px white, 49vw 35vh 1px white,
-    57vw 22vh 2px white, 65vw 42vh 1px white, 73vw 28vh 2px white,
-    81vw 48vh 1px white, 89vw 32vh 2px white, 97vw 45vh 1px white,
-    3vw 68vh 2px white, 11vw 75vh 1px white, 19vw 82vh 2px white,
-    27vw 88vh 1px white, 35vw 72vh 2px white, 43vw 85vh 1px white,
-    51vw 92vh 2px white, 59vw 78vh 1px white;
-  animation: twinkle 6s infinite linear reverse;
+  color: #f4f4f5;
 }
 #container {
   position: absolute;
@@ -121,14 +25,17 @@ h1 {
   border: 1px solid rgba(125, 211, 252, 0.35);
   box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
   border-radius: 12px;
+  padding: 32px 28px 24px;
   text-align: center;
 }
 
 #container > img {
   position: absolute;
   top: 50%;
-  left: calc(100% + 24px);
+  right: calc(100% + 24px);
+  left: auto;
   transform: translateY(-50%);
+  mix-blend-mode: multiply;
 }
 
 #coin-container {
@@ -141,22 +48,71 @@ h1 {
   text-align: center;
 }
 
-.footer {
-  text-align: center;
+#coin-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
 }
- img{
-    width: 110px;
-    
- }
+
+.coin-input,
+.coin-input-container {
+  width: 100%;
+}
+
+.coin-input label,
+.coin-input-container label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+#amount {
+  width: 100%;
+  padding: 10px 12px;
+  color: #ffffff;
+  background-color: #0f172a;
+  border: 1px solid #38bdf8;
+  border-radius: 8px;
+}
+
+#coin-info {
+  display: grid;
+  gap: 12px;
+  margin-top: 28px;
+  line-height: 1.5;
+}
+
+.footer {
+  margin-top: 30px;
+}
+img {
+  width: 300px;
+}
 
 #coin,
 #crypto {
   padding: 10px 12px;
-  color: #e0f2fe;
-  background-color: #0f172a;
-  border: 1px solid #38bdf8;
+  color: #ffffff;
   border-radius: 8px;
   cursor: pointer;
+}
+
+#coin {
+  background-color: #0f766e;
+  border: 1px solid #2dd4bf;
+}
+
+#crypto {
+  background-color: #b45309;
+  border: 1px solid #fbbf24;
+}
+
+#coin:hover {
+  background-color: #115e59;
+}
+
+#crypto:hover {
+  background-color: #92400e;
 }
 
 #coin:focus,
@@ -167,9 +123,50 @@ h1 {
 
 #coin option,
 #crypto option {
-  color: #e0f2fe;
-  background-color: #0f172a;
+  color: #ffffff;
+  background-color: #1e293b;
 }
-h1{
-    color: #FFFF;
+
+a {
+  color: #ffffff;
+}
+
+.footer a {
+  text-decoration: none;
+  color: #b6127f;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+#form-button {
+  padding: 10px 18px;
+  color: #ffffff;
+  background-color: #16a34a;
+  border: 1px solid #22c55e;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#form-button:hover {
+  background-color: #15803d;
+}
+
+#form-button:active {
+  background-color: #166534;
+}
+
+
+@media (max-width: 700px) {
+  #container {
+    left: 50%;
+    width: 90vw;
+    transform: translate(-50%, -50%);
+  }
+
+  #container > img {
+    right: calc(100% + 12px);
+    width: 130px;
+  }
 }
