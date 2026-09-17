@@ -2,13 +2,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
     <title>quoter</title>
 </head>
 <body>
-<h1>Cotizador de Criptomonedas</h1> 
+<h1 >Cotizador de Criptomonedas</h1> 
 <div id = "container">
-    <img src="crypto-icon.png" alt="Icono de Criptomoneda">
+    <img src="imagencrypto.jpg" alt="Icono de Criptomoneda">
     <div id="coin-container">
         
         <form id="coin-form">
@@ -17,9 +17,9 @@
                 <select id="coin" class="coin-input">
                     <option selected disabled>-- Elige tu moneda --</option>
                     <option value="USD">Dolares </option>
-                    <option value="EU">Euros</option>
+                    <option value="EUR">Euros</option>
                     <option value="ARS">Pesos Argentinos</option>
-                    <option value="VES">Bolivares </option>
+                    
                 </select>
             </div>
             <div class="coin-input-container">
@@ -38,13 +38,27 @@
             <button  type="submit" id="form-button">Cotizar</button>
         </form>
         <div id="coin-info">
-            <p id="info">El precio es  <span class="price">1480$</span></p>
-            <p id="info">El precio mas alto es  <span class="price">1480$</span></p>
-            <p id="info">El precio  mas bajo es  <span class="price">1480$</span></p>
-            <p id="info">Variacion 24H<span class="price">4.5%</span></p>
-            <p id="info">Puedes comprar <span class="price">1.5481 ETH </span></p>
+            <p id="info">El precio es  <span class="price"></span></p>
+            <p id="info">El precio mas alto es  <span class="price"></span></p>
+            <p id="info">El precio  mas bajo es  <span class="price"></span></p>
+            <p id="info">Variacion 24H<span class="price"></span></p>
+            <p id="info">Puedes comprar <span class="price"> </span></p>
         </div>
     </div>
+    <footer class="footer">
+       <p>Desarrollado por </p>
+       <div class="link-footer">
+        <a href="https://github.com/CristiandLara" target="_blank" rel="noopener noreferrer">Cristian</a>
+
+       </div>
+
+    </footer>
+    <div class="stars"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
     </body>
 <script src="script.js"></script>
 </html>
