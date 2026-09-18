@@ -9,18 +9,17 @@ A simple web application for checking cryptocurrency prices in different currenc
 - Shows current price, highest price, lowest price, and 24-hour percentage change.
 - Calculates how much cryptocurrency can be purchased with the entered amount.
 - Uses Binance data for cryptocurrency prices.
-- Uses ExchangeRate-API when a direct cryptocurrency/fiat pair is not available.
 - Validates empty, invalid, and non-positive amounts.
 - Displays an error message when a quote cannot be retrieved.
 - Includes a responsive visual layout with a background image and Bitcoin image.
+- Uses Binance directly for price, high, low and 24h variation.
 
 ## Technologies Used
 
 - **HTML5:** Page structure, form controls, labels, options, and results area.
 - **CSS3:** Layout, colors, responsive design, image positioning, transparency effects, and button states.
-- **JavaScript:** Form events, validation, API requests, currency conversion, calculations, and dynamic HTML updates.
+- **JavaScript:** Form events, validation, Binance API requests, calculations, and dynamic HTML updates.
 - **Binance REST API:** Cryptocurrency market data.
-- **ExchangeRate-API:** Fiat currency exchange rates.
 
 ## Project Structure
 
@@ -81,76 +80,121 @@ const coinInfo = document.querySelector('#coin-info');
 ### 2. Requesting market data with `getTicker`
 
 ```js
-async function getTicker(symbol) {
+const getTicker = async (cryptoSelected, coinSelected) => {
   const response = await fetch(
-    `https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`
+    `https://api.binance.com/api/v3/ticker/24hr?symbol=${cryptoSelected}${coinSelected}`
   );
 
   if (!response.ok) {
-    throw new Error(`The ${symbol} trading pair does not exist`);
+    throw new Error(`Par no disponible: ${cryptoSelected}${coinSelected}`);
   }
 
   return response.json();
+};
+```
+
+This function receives the selected cryptocurrency and fiat currency, builds the Binance pair, and requests the 24-hour market data.
+
+- `async` allows asynchronous requests.
+- `await fetch(...)` waits for Binance to respond.
+- `response.ok` checks whether the HTTP request was successful.
+- `response.json()` converts the response into a JavaScript object.
+- `throw new Error(...)` stops the execution when the trading pair is unavailable.
+
+### 3. Reading the quote
+
+```js
+const data = await getTicker(cryptoSelected, coinSelected);
+const price = Number(data.lastPrice);
+const high = Number(data.highPrice);
+const low = Number(data.lowPrice);
+const change = Number(data.priceChangePercent);
+const quantity = amountValue / price;
+```
+
+The code reads the values returned by Binance and extracts:
+
+- current price
+- daily high
+- daily low
+- 24-hour percentage change
+- number of coins the user can buy
+
+### 4. Listening for form submission
+
+```js
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+```
+
+The `submit` event runs when the user clicks `Get Quote`.
+
+`preventDefault()` stops the browser from reloading the page, allowing the quote to be retrieved dynamically with JavaScript.
+
+### 5. Reading the selected values
+
+```js
+const coinSelected = coin.value;
+const cryptoSelected = crypto.value;
+const amountValue = Number(amount.value);
+```
+
+The code obtains:
+
+- the selected fiat currency
+- the selected cryptocurrency
+- the entered amount converted to a number
+
+### 6. Validating the form
+
+```js
+if (!coinSelected || !cryptoSelected || !Number.isFinite(amountValue) || amountValue <= 0) {
+  coinInfo.innerHTML = '<p>Please complete all fields.</p>';
+  return;
 }
 ```
 
-This function receives a Binance trading pair, such as `BTCUSD` or `ETHUSDT`, and requests 24-hour market data.
+The quote is rejected when:
 
-- `async` allows the function to work with asynchronous requests.
-- `await fetch(...)` waits for Binance to respond.
-- `response.ok` checks whether the request succeeded.
-- `response.json()` converts the response into a JavaScript object.
-- `throw new Error(...)` interrupts the process when the trading pair is unavailable.
+- no fiat currency is selected
+- no cryptocurrency is selected
+- the amount is not a valid number
+- the amount is zero or negative
 
-### 3. Getting a quote with `getQuote`
+`return` stops the function before making unnecessary API requests.
 
-```js
-async function getQuote(cryptoSelected, coinSelected) {
-```
+### 7. Updating the interface
 
-This function is responsible for finding the best available way to calculate the quote.
-
-#### Direct trading pair
-
-First, the application tries to request a direct pair:
+After receiving the data, JavaScript replaces the content of `#coin-info`:
 
 ```js
-getTicker(`${cryptoSelected}${coinSelected}`)
+coinInfo.innerHTML = `
+  <p>Current price <span class="price">${price.toFixed(2)} ${coinSelected}</span></p>
+  <p>Highest price <span class="price">${high.toFixed(2)} ${coinSelected}</span></p>
+  <p>Lowest price <span class="price">${low.toFixed(2)} ${coinSelected}</span></p>
+  <p>24-hour change <span class="price">${change.toFixed(2)}%</span></p>
+  <p>You can buy <span class="price">${quantity.toFixed(6)} ${cryptoSelected}</span></p>
+`;
 ```
 
-For example:
+`toFixed(2)` formats prices with two decimal places, while `toFixed(6)` shows the crypto quantity with six decimal places.
 
-- `BTCUSD`
-- `ETHEUR`
-- `LTCARS`
-
-If Binance supports that pair, the application uses the returned values directly.
-
-#### Fallback through USDT
-
-Some fiat currencies do not have a direct pair on Binance. When the direct request fails, the application uses two requests in parallel:
+### 8. Handling errors
 
 ```js
-const [cryptoData, ratesResponse] = await Promise.all([
-  getTicker(`${cryptoSelected}USDT`),
-  fetch('https://api.exchangerate-api.com/v4/latest/USD')
-]);
+} catch (error) {
+  console.log(error);
+  coinInfo.innerHTML = '<p>The quote could not be retrieved.</p>';
+}
 ```
 
-The process is:
+The `try...catch` block handles failures caused by:
 
-1. Get the cryptocurrency price in USDT from Binance.
-2. Get the USD exchange rates from ExchangeRate-API.
-3. Find the selected fiat currency rate.
-4. Multiply the cryptocurrency price by that exchange rate.
+- an unavailable Binance trading pair
+- a failed API request
+- a network or browser connection problem
 
-For example, when the user selects EUR:
-
-```text
-Crypto price in USDT x USD-to-EUR rate = Crypto price in EUR
-```
-
-The same conversion is applied to the highest and lowest prices. The 24-hour percentage change remains the value provided by Binance.
+The technical error is printed to the browser console, while the user receives a clear message in the interface.
 
 ### 4. Listening for form submission
 
@@ -270,14 +314,13 @@ This is a static web project, so no package installation is required.
 4. Enter a positive amount.
 5. Click `Get Quote`.
 
-An internet connection is required because the application requests live data from Binance and ExchangeRate-API.
+An internet connection is required because the application requests live data from Binance.
 
 ## Important Notes
 
 - API responses depend on the availability of external services.
-- Binance may not provide every cryptocurrency/fiat pair directly, which is why the USDT conversion fallback exists.
-- The `cryptoIds` object is currently defined in `script.js` but is not used by the current calculation flow. It can be removed or used later if the project adds another cryptocurrency API.
-- For production use, API errors, rate limits, loading states, and more robust numeric formatting could be expanded.
+- Binance may not offer every cryptocurrency/fiat pair directly, so the code depends on the pair created from the user selection.
+- For production use, API errors, loading states, and more robust numeric formatting could be expanded.
 
 ## Author
 
