@@ -1,67 +1,24 @@
-// Selectores
 const form = document.querySelector('#coin-form');
 const coin = document.querySelector('#coin');
 const crypto = document.querySelector('#crypto');
 const amount = document.querySelector('#amount');
 const coinInfo = document.querySelector('#coin-info');
 
-const cryptoIds = {
-  BCH: 'bitcoin-cash',
-  BTC: 'bitcoin',
-  ETH: 'ethereum',
-  LTC: 'litecoin'
-};
-
-async function getTicker(symbol) {
-  const response = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
+const getTicker = async (cryptoSelected, coinSelected) => {
+  const response = (await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${cryptoSelected}${coinSelected}`));
 
   if (!response.ok) {
-    throw new Error(`The ${symbol} trading pair does not exist`);
+    throw new Error(`Par no disponible: ${cryptoSelected}${coinSelected}`);
   }
 
   return response.json();
-}
+};
 
-async function getQuote(cryptoSelected, coinSelected) {
-  try {
-    const data = await getTicker(`${cryptoSelected}${coinSelected}`);
-    return {
-      price: Number(data.lastPrice),
-      high: Number(data.highPrice),
-      low: Number(data.lowPrice),
-      change: Number(data.priceChangePercent)
-    };
-  } catch {
-    if (coinSelected === 'USDT') {
-      throw new Error('The quote could not be retrieved');
-    }
-
-    const [cryptoData, ratesResponse] = await Promise.all([
-      getTicker(`${cryptoSelected}USDT`),
-      fetch('https://api.exchangerate-api.com/v4/latest/USD')
-    ]);
-    const rates = await ratesResponse.json();
-    const exchangeRate = coinSelected === 'USD' ? 1 : rates.rates?.[coinSelected];
-
-    if (!exchangeRate) {
-      throw new Error(`There is no exchange rate for ${coinSelected}`);
-    }
-
-    return {
-      price: Number(cryptoData.lastPrice) * exchangeRate,
-      high: Number(cryptoData.highPrice) * exchangeRate,
-      low: Number(cryptoData.lowPrice) * exchangeRate,
-      change: Number(cryptoData.priceChangePercent)
-    };
-  }
-}
-
-// Eventos
 form.addEventListener('submit', async e => {
   e.preventDefault();
 
-  const coinSelected = [...coin.options].find(option => option.selected)?.value;
-  const cryptoSelected = [...crypto.options].find(option => option.selected)?.value;
+  const coinSelected = coin.value;
+  const cryptoSelected = crypto.value;
   const amountValue = Number(amount.value);
 
   if (!coinSelected || !cryptoSelected || !Number.isFinite(amountValue) || amountValue <= 0) {
@@ -70,7 +27,11 @@ form.addEventListener('submit', async e => {
   }
 
   try {
-    const { price, high, low, change } = await getQuote(cryptoSelected, coinSelected);
+    const data = await getTicker(cryptoSelected, coinSelected);
+    const price = Number(data.lastPrice);
+    const high = Number(data.highPrice);
+    const low = Number(data.lowPrice);
+    const change = Number(data.priceChangePercent);
     const quantity = amountValue / price;
 
     coinInfo.innerHTML = `
